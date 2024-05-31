@@ -1,4 +1,10 @@
 import "@testing-library/jest-dom/vitest";
+import resizeObserver from "resize-observer-polyfill";
+global.ResizeObserver = resizeObserver;
+
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
+window.HTMLElement.prototype.hasPointerCapture = vi.fn();
+window.HTMLElement.prototype.releasePointerCapture = vi.fn();
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
