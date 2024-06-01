@@ -4,31 +4,34 @@ import OrderStatus from "../../src/components/OrderStatusSelector";
 import userEvent from "@testing-library/user-event";
 
 describe("OrderStatusSelector", () => {
-  it("should render New as the default value", () => {
+  const renderOrderStatusSelector = () => {
+    const onChange = vi.fn();
     render(
       <Theme>
-        <OrderStatus onChange={console.log} />
+        <OrderStatus onChange={onChange} />
       </Theme>
     );
 
-    const button = screen.getByRole("combobox");
-    expect(button).toHaveTextContent(/new/i);
+    return {
+      trigger: screen.getByRole("combobox"),
+      onChange,
+      user: userEvent.setup(),
+      getOptions: async () => await screen.findAllByRole("option"),
+    };
+  };
+
+  it("should render New as the default value", () => {
+    const { trigger } = renderOrderStatusSelector();
+    expect(trigger).toHaveTextContent(/new/i);
   });
 
   it("should render correct statuses", async () => {
-    render(
-      <Theme>
-        <OrderStatus onChange={console.log} />
-      </Theme>
-    );
+    const { trigger, user, getOptions } = renderOrderStatusSelector();
 
-    const button = screen.getByRole("combobox");
-    const user = userEvent.setup();
-    await user.click(button);
+    await user.click(trigger);
 
-    const options = await screen.findAllByRole("option");
+    const options = await getOptions();
     expect(options).toHaveLength(3);
-
     const labels = options.map((option) => option.textContent);
     expect(labels).toEqual(["New", "Processed", "Fulfilled"]);
   });
