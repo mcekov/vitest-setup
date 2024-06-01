@@ -4,7 +4,7 @@ import OrderStatus from "../../src/components/OrderStatusSelector";
 import userEvent from "@testing-library/user-event";
 
 describe("OrderStatusSelector", () => {
-  const renderOrderStatusSelector = () => {
+  const renderComponent = () => {
     const onChange = vi.fn();
     render(
       <Theme>
@@ -23,12 +23,12 @@ describe("OrderStatusSelector", () => {
   };
 
   it("should render New as the default value", () => {
-    const { trigger } = renderOrderStatusSelector();
+    const { trigger } = renderComponent();
     expect(trigger).toHaveTextContent(/new/i);
   });
 
   it("should render correct statuses", async () => {
-    const { trigger, user, getOptions } = renderOrderStatusSelector();
+    const { trigger, user, getOptions } = renderComponent();
 
     await user.click(trigger);
 
@@ -44,8 +44,7 @@ describe("OrderStatusSelector", () => {
   ])(
     "should call onChange with $value when the $label option is selected",
     async ({ label, value }) => {
-      const { trigger, user, onChange, getOption } =
-        renderOrderStatusSelector();
+      const { trigger, user, onChange, getOption } = renderComponent();
       await user.click(trigger);
 
       const option = await getOption(label);
@@ -56,7 +55,7 @@ describe("OrderStatusSelector", () => {
   );
 
   it("should call onChange with 'new' when the New option is selected", async () => {
-    const { trigger, user, onChange, getOption } = renderOrderStatusSelector();
+    const { trigger, user, onChange, getOption } = renderComponent();
     await user.click(trigger);
 
     const processedOption = await getOption(/processed/i);
