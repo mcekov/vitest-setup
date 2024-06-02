@@ -1,5 +1,11 @@
 import "@testing-library/jest-dom/vitest";
 import resizeObserver from "resize-observer-polyfill";
+import { server } from "./mocks/server";
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
 global.ResizeObserver = resizeObserver;
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
