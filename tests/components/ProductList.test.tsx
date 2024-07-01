@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import ProductList from "../../src/components/ProductList";
-import { http, HttpResponse as res } from "msw";
+import { http, HttpResponse as response } from "msw";
 import { server } from "../mocks/server";
+
+import ProductList from "../../src/components/ProductList";
 
 describe("ProductList", () => {
   it("should render a list of products", async () => {
@@ -12,7 +13,7 @@ describe("ProductList", () => {
   });
 
   it("should render no products available if there is no products", async () => {
-    server.use(http.get("/products", () => res.json([])));
+    server.use(http.get("/products", () => response.json([])));
     render(<ProductList />);
 
     const message = await screen.findByText(/no products/i);
