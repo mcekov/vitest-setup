@@ -1,6 +1,6 @@
 import { http, HttpResponse as response } from "msw";
 
-import { data } from "../../src/constants/index";
+import { data } from "./data";
 
 export const handlers = [
   http.get("/categories", () => {
@@ -9,5 +9,11 @@ export const handlers = [
 
   http.get("/products", () => {
     return response.json([...data]);
+  }),
+
+  http.get("/products/:id", ({ params }) => {
+    const id = parseInt(params.id as string);
+    const product = data.find((product) => product.id === id);
+    return response.json(product);
   }),
 ];
