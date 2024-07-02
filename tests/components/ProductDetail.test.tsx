@@ -4,17 +4,32 @@ import { http, HttpResponse as response } from "msw";
 import ProductDetail from "../../src/components/ProductDetail";
 import { data } from "../mocks/data";
 import { server } from "../mocks/server";
+import { db } from "../mocks/db";
 
 describe("ProductDetail", () => {
+  let productId: number;
+
+  beforeAll(() => {
+    const product = db.product.create();
+    productId = product.id;
+  });
+
+  afterAll(() => {
+    db.product.delete({ where: { id: { equals: productId } } });
+  });
+
   it("should render product details", async () => {
-    render(<ProductDetail productId={1} />);
+    const product = db.product.findFirst({
+      where: { id: { equals: productId } },
+    });
+    render(<ProductDetail productId={productId} />);
 
     expect(
-      await screen.findByText(new RegExp(data[0].name))
+      await screen.findByText(new RegExp(product!.name))
     ).toBeInTheDocument();
 
     expect(
-      await screen.findByText(new RegExp(data[0].price.toString()))
+      await screen.findByText(new RegExp(product!.price.toString()))
     ).toBeInTheDocument();
   });
 
